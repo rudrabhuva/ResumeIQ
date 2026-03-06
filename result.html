@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeIQ | AI Dashboard</title>
+
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --card-bg: rgba(30, 30, 50, 0.8);
+            --accent-primary: #00ffc3;
+            --accent-secondary: #7000ff;
+            --text-main: #e5e7eb;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 40px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            padding: 20px 5%;
+            height: calc(100vh - 120px);
+        }
+
+        /* Left Column: PDF Sticky */
+        .pdf-container {
+            position: sticky;
+            top: 30px;
+            height: calc(100vh - 60px);
+        }
+
+        .pdf-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .pdf-card h3 {
+            font-size: 1rem;
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-iframe {
+            flex-grow: 1;
+            width: 100%;
+            border-radius: 12px;
+            border: none;
+        }
+
+        .analysis-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+            padding-right: 10px;
+            overflow-x: hidden;
+        }
+
+        /* For pre blocks in AI feedback */
+        .feedback-container pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-x: hidden;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Score Hero */
+        .score-hero {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 20px;
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .good {
+            color: var(--success);
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .average {
+            color: var(--warning);
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .bad {
+            color: var(--danger);
+            text-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .score-meta {
+            color: var(--text-dim);
+        }
+
+        .score-meta strong {
+            color: var(--text-main);
+        }
+
+        /* Chart */
+        #chartContainer {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+        }
+
+        /* Skills */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tags span {
+            background: rgba(0, 255, 195, 0.1);
+            color: var(--accent-primary);
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 255, 195, 0.2);
+            font-weight: 500;
+        }
+
+        /* AI Feedback */
+        .feedback-item {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feedback-item:last-child {
+            border: 0;
+        }
+
+        .feedback-item h3 {
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            /* wrap long lines */
+            word-wrap: break-word;
+            /* break long words */
+            overflow-x: hidden;
+            /* hide horizontal scrollbar */
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        button,
+        .button-link {
+            flex: 1;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-main);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        @media(max-width: 1000px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .pdf-container {
+                position: relative;
+                height: 400px;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>ResumeIQ Analysis</h1>
+            <p>AI Resume Intelligence Dashboard</p>
+        </div>
+        <p>Report ID: #{{ word_count }}{{ score }}</p>
+    </header>
+
+    <main>
+        <!-- Left PDF -->
+        {% if uploaded_pdf %}
+        <div class="pdf-container">
+            <div class="pdf-card">
+                <h3>📄 Document Preview</h3>
+                <iframe src="{{ uploaded_pdf }}#toolbar=0" class="pdf-iframe"></iframe>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Right Analysis -->
+        <div class="analysis-section">
+
+            {% if score is not none %}
+            <section>
+                <h2>📈 Performance Analytics</h2>
+                <div class="score-hero">
+                    <div>
+                        {% if score >= 75 %}
+                        <div class="score-value good">{{ score }}%</div>
+                        <p class="good">Elite Standing</p>
+                        {% elif score >= 50 %}
+                        <div class="score-value average">{{ score }}%</div>
+                        <p class="average">Competitive Profile</p>
+                        {% else %}
+                        <div class="score-value bad">{{ score }}%</div>
+                        <p class="bad">Action Required</p>
+                        {% endif %}
+                    </div>
+                    <div class="score-meta">
+                        <p><strong>Word Count:</strong> {{ word_count }}</p>
+                        {% if job_role %}
+                        <p><strong>Target Role:</strong> {{ job_role }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            {% if factor_scores %}
+            <section>
+                <h2>📊 Component Breakdown</h2>
+                <div id="chartContainer">
+                    <canvas id="resumeRadarChart"></canvas>
+                </div>
+            </section>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                const factorScores = {{ factor_scores | tojson | safe }};
+                const ctx = document.getElementById('resumeRadarChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: Object.keys(factorScores),
+                        datasets: [{
+                            data: Object.values(factorScores),
+                            backgroundColor: 'rgba(0, 255, 195, 0.15)',
+                            borderColor: '#00ffc3',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#00ffc3',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            r: {
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                angleLines: { color: 'rgba(255,255,255,0.1)' },
+                                pointLabels: { color: '#94a3b8', font: { size: 12 } },
+                                ticks: { display: false },
+                                suggestedMin: 0, suggestedMax: 100
+                            }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            </script>
+            {% endif %}
+
+            {% if skill_tags %}
+            <section>
+                <h2>🏷️ Keywords & Extraction</h2>
+                <div class="tags">
+                    {% for tag in skill_tags %}
+                    <span>{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if suggestions %}
+            <section>
+                <h2>💡 AI Feedback</h2>
+                <div class="feedback-container">
+                    {% if suggestions is mapping %}
+                    {% if suggestions.skill_score %}
+                    <div class="feedback-item">
+                        <h3>Skill Alignment</h3>
+                        <p>{{ suggestions.skill_score }}</p>
+                    </div>
+                    {% endif %}
+                    {% if suggestions.strengths %}
+                    <div class="feedback-item">
+                        <h3>Core Strengths</h3>
+                        <p>{{ suggestions.strengths }}</p>
+                    </div>
+                    {% endif %}
+                    {% if suggestions.weaknesses %}
+                    <div class="feedback-item">
+                        <h3>Gap Analysis</h3>
+                        <p>{{ suggestions.weaknesses }}</p>
+                    </div>
+                    {% endif %}
+                    {% if suggestions.recommendations %}
+                    <div class="feedback-item">
+                        <h3>Next Steps</h3>
+                        <p>{{ suggestions.recommendations }}</p>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <pre>{{ suggestions }}</pre>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if improved_resume %}
+            <section>
+                <h2>✨ AI-Optimized Resume</h2>
+                <pre>{{ improved_resume }}</pre>
+            </section>
+            {% endif %}
+
+            <div class="button-group">
+                {% if not improved_resume %}
+                <form action="/improve" method="POST" style="flex:2;">
+                    <input type="hidden" name="resume_text" value="{{ original_text }}">
+                    <input type="hidden" name="job_role" value="{{ job_role }}">
+                    <input type="hidden" name="uploaded_pdf" value="{{ uploaded_pdf }}"> <!-- FIX -->
+                    <button type="submit" class="btn-primary">✨ Improve Resume</button>
+                </form>
+                {% endif %}
+                <a href="/" class="button-link btn-outline">Back to Upload</a>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>

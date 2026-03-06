@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeIQ | Smart Career Scanner</title>
+
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --card-bg: rgba(30, 30, 50, 0.8);
+            --accent-primary: #00ffc3;
+            --accent-secondary: #7000ff;
+            --text-main: #e5e7eb;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(120deg, #0a0c14, #1a1e2c, #10111b, #1b1c2a, #0a0c14);
+    background-size: 200% 200%;
+    animation: darkGradientWave 40s ease infinite;
+    color: var(--text-main);
+}
+
+@keyframes darkGradientWave {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 50% 75%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    75% {
+        background-position: 50% 25%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 24px;
+            width: 420px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            display: inline-block;
+            /* Must be inline/inline-block */
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            /* Chrome, Safari */
+            -webkit-text-fill-color: transparent;
+            /* Chrome, Safari */
+            color: var(--text-main);
+            /* Fallback for Firefox/Edge */
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        label {
+            color: var(--text-main);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary), 0 0 20px var(--accent-secondary);
+        }
+
+        /* File Upload */
+        .file-wrapper {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .custom-file-btn:hover {
+            background: var(--accent-primary);
+            color: #0f111a;
+        }
+
+        #file-name {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 20px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #0f111a;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 195, 0.6),
+                0 0 30px rgba(112, 0, 255, 0.5),
+                0 10px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 25px rgba(0, 255, 195, 0.8),
+                0 0 50px rgba(112, 0, 255, 0.7),
+                0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 12px;
+            margin-top: 18px;
+        }
+
+        @media(max-width:500px) {
+            .container {
+                width: 90%;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>✨ ResumeIQ</h1>
+        <div class="subtitle">
+            Turn Your Resume Into an Interview Magnet
+        </div>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="job_role">🎯 Your Dream Role</label>
+            <input type="text" name="job_role" id="job_role" placeholder="Tell us the role you're targeting..." required
+                autocomplete="off">
+
+            <label for="resume">📄 Upload Your Resume (PDF Only)</label>
+            <div class="file-wrapper">
+                <input type="file" name="resume" id="resume" accept=".pdf" required>
+                <label for="resume" class="custom-file-btn">Choose Resume</label>
+                <span id="file-name">No file selected</span>
+            </div>
+
+            <button type="submit">⚡ Scan & Unlock Insights</button>
+        </form>
+
+        <div class="footer">
+            AI-Powered Resume Scoring • Skill Gap Detection • Smart Suggestions
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById("resume");
+        const fileName = document.getElementById("file-name");
+
+        fileInput.addEventListener("change", function () {
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            } else {
+                fileName.textContent = "No file selected";
+            }
+        });
+    </script>
+
+</body>
+
+</html>
