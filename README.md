@@ -1,3 +1,6 @@
+
+ResumeIQ – AI Resume Analyzer
+------------------------------
 Resume IQ is an AI-powered web application that analyzes resumes and provides feedback to help users improve their resumes. The system allows users to upload a resume, processes it using Python, and displays the analysis results on a results page.
 
 🚀 Features
